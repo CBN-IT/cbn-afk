@@ -55,22 +55,42 @@
 			ready: function () {
 			},
 			attached:function(){
-				this.listen(document,"mousemove","onMouseMove");
 				this.listen(document,"visibilitychange", "onVisibilityChange");
+				this.listen(document,"mousemove","_onActivity");
+				this.listen(document,"keydown","_onActivity");
+				this.listen(document,"DOMMouseScroll","_onActivity");
+				this.listen(document,"mousewheel","_onActivity");
+				this.listen(document,"mousedown","_onActivity");
+				this.listen(document,"touchstart","_onActivity");
+				this.listen(document,"touchmove","_onActivity");
+				this.startTimer();
 			},
 			detached:function(){
-				this.unlisten(document,"mousemove","onMouseMove");
 				this.unlisten(document,"visibilitychange", "onVisibilityChange");
+				this.unlisten(document,"mousemove","_onActivity");
+				this.unlisten(document,"keydown","_onActivity");
+				this.unlisten(document,"DOMMouseScroll","_onActivity");
+				this.unlisten(document,"mousewheel","_onActivity");
+				this.unlisten(document,"mousedown","_onActivity");
+				this.unlisten(document,"touchstart","_onActivity");
+				this.unlisten(document,"touchmove","_onActivity");
+				this.stopTimer();
 			},
-			onMouseMove: function(event){
+			_onActivity: function(event){
 				this.afk = false;
 				this.debounce("mousemove", function () {
-					clearTimeout(this.timer);
-					this.timer = setTimeout(function () {
-						console.log("s-au terminat cele " + this.timeValue + " sec");
-						this.afk = true;
-					}.bind(this), this.duration * 1000);
+					this.stopTimer();
+					this.startTimer();
 				});
+			},
+			startTimer: function() {
+				this.timer = setTimeout(function () {
+					console.log("s-au terminat cele " + this.timeValue + " sec");
+					this.afk = true;
+				}.bind(this), this.duration * 1000);
+			},
+			stopTimer: function() {
+				clearTimeout(this.timer);
 			},
 			onVisibilityChange:function(){
 				this.visible = !document.hidden;
