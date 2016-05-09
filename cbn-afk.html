@@ -1,0 +1,81 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`cbn-afk` 
+
+    <cbn-afk></cbn-afk>
+
+### Validation
+
+### Styling
+
+@demo demo/index.html
+@class cbn-afk
+-->
+
+<dom-module id="cbn-afk">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		
+	</template>
+</dom-module>
+
+<script>
+	(function () {
+		Polymer({
+
+			is: 'cbn-afk',
+			behaviors: [],
+			properties: {
+				/**
+				 * The duration in seconds after you get notified about beeing afk
+				 */
+				duration: {
+					type:Number,
+					value: 5
+				},
+				afk: {
+					type:Boolean,
+					value: false,
+					notify:true,
+					reflectToAttribute:true
+				},
+				visible: {
+					type:Boolean,
+					value: true,
+					notify:true,
+					reflectToAttribute:true
+				}
+			},
+			listeners: {},
+			ready: function () {
+			},
+			attached:function(){
+				this.listen(document,"mousemove","onMouseMove");
+				this.listen(document,"visibilitychange", "onVisibilityChange");
+			},
+			detached:function(){
+				this.unlisten(document,"mousemove","onMouseMove");
+				this.unlisten(document,"visibilitychange", "onVisibilityChange");
+			},
+			onMouseMove: function(event){
+				this.afk = false;
+				this.debounce("mousemove", function () {
+					clearTimeout(this.timer);
+					this.timer = setTimeout(function () {
+						console.log("s-au terminat cele " + this.timeValue + " sec");
+						this.afk = true;
+					}.bind(this), this.duration * 1000);
+				});
+			},
+			onVisibilityChange:function(){
+				this.visible = !document.hidden;
+			}
+		})
+		
+	})();
+</script>
